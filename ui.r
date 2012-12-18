@@ -6,7 +6,8 @@ shinyUI(pageWithSidebar(
             highly experimental.  Shiny has prebuilt functions with plotOutput
             for delivering R plots through .png, but sometimes we might like to deliver more than .png.
             Ideally, we could use knitr's knit2pdf function to access the power of latex
-            to build a multi-page pdf real-time and then send it to the browser."),
+            to build a multi-page pdf real-time and then send it to the browser.  This example
+            unfortunately only uses pdf() instead of knit2pdf()."),
     downloadLink('downloadPdf', 'Download Performance File')
   ),
   mainPanel(
