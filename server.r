@@ -276,21 +276,40 @@ shinyServer(function(input, output) {
     
     
     #####################################code to create pdf and return##############################
+    createPdf <- function() {
+        temp <- tempfile(fileext=".pdf")
+        pdf(file=temp, height=8, width=11)
     
-    pdffile <- tempfile(fileext=".pdf")
-    pdf(file=pdffile, height=8, width=11)
-
-    print(returns$cumulgrowth,position=c(0,0.6,0.6,1),more=TRUE)
-    #print(returns$bar,position=c(0,0,0.6,0.6),more=TRUE)
-    print(risk$drawdown,position=c(0,0,0.6,0.6),more=TRUE)
-    #print(risk$drawdown,position=c(0.6,0,1,1))
-    print(returns$bar,position=c(0.6,0,1,1))    
-  
-    dev.off()
-    b64 <- base64encode(readBin(pdffile, what=raw(),n=100000))
+        print(returns$cumulgrowth,position=c(0,0.6,0.6,1),more=TRUE)
+        #print(returns$bar,position=c(0,0,0.6,0.6),more=TRUE)
+        print(risk$drawdown,position=c(0,0,0.6,0.6),more=TRUE)
+        #print(risk$drawdown,position=c(0.6,0,1,1))
+        print(returns$bar,position=c(0.6,0,1,1))    
+      
+        dev.off()
+        
+        return(temp)
+    }
+    
+    pdffile <- createPdf()
+    
+    
+    b64 <- base64encode(readBin(pdffile, what=raw(),n=file.info(pdffile)$size))
     return(paste("data:application/pdf;base64,", b64, sep=''))
     #delete file now that we are done
     unlink(pdffile)
+
+    #######################################to use downloadHandler###################################
+    #######################################uncomment below##########################################
+    #output$downloadPdf <- downloadHandler(
+    #    filename = 'perfreport.pdf',
+    #    content = function(filepath) {
+    #            pdffile <- createPdf()
+    #            on.exit(unlink(pdffile))
+    #            bytes <- readBin(pdffile, "raw", file.info(pdffile)$size)
+    #            writeBin(bytes, filepath)
+    #        }
+    #    )
     }
   )
 }
